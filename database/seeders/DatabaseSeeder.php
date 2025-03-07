@@ -14,11 +14,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        # ¡Tener en cuenta el orden en que se añade cada seeder para que no de error al ejecutar el comando db:seed!
+        $this->call([
+            FilmFakeSeeder::class,
+            ActorFakeSeeder::class,
+            FilmActorSeeder::class,
+            AudiencesSeeder::class,
+        ]);
     }
 }
