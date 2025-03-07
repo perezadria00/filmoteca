@@ -47,13 +47,6 @@
             </ul>
         </div>
 
-        <div class="col-md-6">
-            <h3 class="text-center mb-4">Menú Actores</h3>
-            <ul class="list-group">
-                <li class="list-group-item"><a href="/actorout/actors">Ver todos los actores</a></li>
-            </ul>
-        </div>
-
         <!-- Columna derecha: Formulario -->
         <div class="col-md-6">
             <form action="{{ route('createFilm') }}" method="post" class="p-4 border rounded bg-light">
