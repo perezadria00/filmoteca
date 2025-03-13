@@ -32,3 +32,7 @@ Route::middleware('year')->group(function () {
 Route::prefix('filmin')->middleware('ValidateUrl')->group(function () {
     Route::post('/create', [FilmController::class, 'createFilm'])->name('createFilm');
 });
+
+Route::prefix('actorout')->group(function(){
+    Route::get('actors');
+});
