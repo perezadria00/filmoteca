@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
 
 class ActorController extends Controller
 {
@@ -32,4 +33,31 @@ class ActorController extends Controller
             'title' => $title,
         ]);
     }
+
+    public function listActorsByDecade(Request $request): View
+{
+    $title = "Listado de actores por década";
+
+    // Validar la década seleccionada
+    $validatedData = $request->validate([
+        'decades' => 'required|integer', 
+    ]);
+
+    $decade = $validatedData['decades'];
+
+    // Calcular el rango de años para la década seleccionada
+    $startYear = $decade;
+    $endYear = $decade + 9;
+
+    // Filtrar actores por década
+    $actors = DB::table('actors')
+        ->whereYear('birthdate', '>=', $startYear)
+        ->whereYear('birthdate', '<=', $endYear)
+        ->get();
+
+    return view('actors.list', [
+        'actors' => $actors,
+        'title' => $title,
+    ]);
+}
 }
