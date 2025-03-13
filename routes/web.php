@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FilmController;
+use App\Http\Controllers\ActorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\ValidateUrl;
 
@@ -34,5 +35,5 @@ Route::prefix('filmin')->middleware('ValidateUrl')->group(function () {
 });
 
 Route::prefix('actorout')->group(function(){
-    Route::get('actors');
+    Route::get('actors', [ActorController::class]);
 });
