@@ -182,7 +182,7 @@ class FilmController extends Controller
             'country' => 'required|string|max:255',
             'duration' => 'required|integer|min:1|max:500',
             'img_url' => 'required|url|max:65535',
-            'options' => 'required|in:db,json', // Asegura que la opción sea 'db' o 'json'
+            'options' => 'required|in:db,json', 
         ], [
             'img_url.required' => 'La URL de la imagen es obligatoria.',
             'img_url.url' => 'La URL de la imagen no es válida. Asegúrate de incluir "http://" o "https://".',

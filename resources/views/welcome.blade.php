@@ -64,7 +64,7 @@
                     <h3 class="actors-title text-center">Menú de actores</h3>
                     <ul class="list-group mt-4">
                         <li class="list-group-item"><a href="/actorout/actors">Ver todos los actores</a></li>
-                        <li class="list-group-item"><a href="">Contador de actores</a></li>
+                        <li class="list-group-item"><a href="/actorout/listActorsByDecade">Contador de actores</a></li>
                     </ul>
                 </div>
             </div>
