@@ -25,7 +25,6 @@ Route::middleware('year')->group(function () {
         Route::get('filmout/edit/{id}', [FilmController::class, 'editFilm'])->name('editFilm');
         Route::put('filmout/update/{id}', [FilmController::class, 'updateFilm'])->name('updateFilm');
         Route::delete('filmout/delete/{id}', [FilmController::class, 'deleteFilm'])->name('deleteFilm');
-
     });
 });
 
@@ -34,7 +33,9 @@ Route::prefix('filmin')->middleware('ValidateUrl')->group(function () {
     Route::post('/create', [FilmController::class, 'createFilm'])->name('createFilm');
 });
 
-Route::prefix('actorout')->group(function(){
-    Route::get('actors', [ActorController::class, 'listActors'])->name('listActors');
-    Route::get('listActorsByDecade');
+Route::middleware('year')->group(function () {
+    Route::prefix('actorout')->group(function () {
+        Route::get('actors', [ActorController::class, 'listActors'])->name('listActors');
+        Route::get('listActorsByDecade');
+    });
 });
