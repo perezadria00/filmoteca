@@ -94,6 +94,14 @@
                         <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
+                <div class="form-group">
+                    <label for="insert-selection">Insertar en:</label>
+                    <select name="options" id="options">
+                        <option value="db">BBDD</option>
+                        <option value="json">JSON</option>
+                    </select>
+
+                </div>
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-primary btn-block">Enviar</button>
                 </div>

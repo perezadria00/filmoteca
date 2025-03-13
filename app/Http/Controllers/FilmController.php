@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Film;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
 
 
 
@@ -17,10 +19,17 @@ class FilmController extends Controller
      */
     public static function readFilms(): array
     {
-
-
-        return Film::all()->toArray();
+        $db_films = DB::table('films')->get()->map(function ($film) {
+            return (array) $film;
+        })->toArray();
+    
+        $json_films = json_decode(Storage::get('public/films.json'), true);
+    
+        $combined_films = array_merge($db_films, $json_films);
+    
+        return $combined_films;
     }
+
     /**
      * List films older than input year 
      * if year is not infomed 2000 year will be used as criteria
@@ -162,9 +171,10 @@ class FilmController extends Controller
         return view('films.count', ['totalFilms' => $totalFilms, 'title' => $title]);
     }
 
+
     public function createFilm(Request $request)
     {
-
+        // Validar los datos del formulario
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'year' => 'required|integer|min:1900|max:2024',
@@ -172,21 +182,21 @@ class FilmController extends Controller
             'country' => 'required|string|max:255',
             'duration' => 'required|integer|min:1|max:500',
             'img_url' => 'required|url|max:65535',
+            'options' => 'required|in:db,json', // Asegura que la opción sea 'db' o 'json'
         ], [
             'img_url.required' => 'La URL de la imagen es obligatoria.',
             'img_url.url' => 'La URL de la imagen no es válida. Asegúrate de incluir "http://" o "https://".',
         ]);
-
-
+    
+        // Verificar si la película ya existe
         if ($this->isFilm($validatedData['name'])) {
-
             Log::error('La película ya existe.');
             return redirect('/')->with('error', 'La película ya existe.');
         }
-
+    
         try {
-
-            Film::create([
+            // Datos de la película
+            $filmData = [
                 'name' => $validatedData['name'],
                 'year' => $validatedData['year'],
                 'genre' => $validatedData['genre'],
@@ -195,20 +205,49 @@ class FilmController extends Controller
                 'img_url' => $validatedData['img_url'],
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
-
-            Log::info('Película añadida correctamente.');
-            return redirect('/filmout/films')->with('success', 'Película añadida correctamente.');
+            ];
+    
+            // Insertar en la base de datos o en el archivo JSON
+            if ($validatedData['options'] === 'db') {
+                // Insertar en la base de datos
+                DB::table('films')->insert($filmData);
+                Log::info('Película añadida correctamente en la base de datos.');
+                return redirect('/filmout/films')->with('success', 'Película añadida correctamente en la base de datos.');
+            } elseif ($validatedData['options'] === 'json') {
+                // Insertar en el archivo JSON
+                $this->insertFilmIntoJson($filmData);
+                Log::info('Película añadida correctamente en el archivo JSON.');
+                return redirect('/filmout/films')->with('success', 'Película añadida correctamente en el archivo JSON.');
+            }
         } catch (\Exception $e) {
-
+            Log::error('Error al añadir la película: ' . $e->getMessage());
             return redirect('/')->with('error', 'Hubo un problema al añadir la película: ' . $e->getMessage());
         }
     }
-
-
-    public function isFilm(string $name): bool
+    
+    private function isFilm($name)
     {
-        return Film::where('name', $name)->exists();
+        // Verificar si la película ya existe en la base de datos
+        return DB::table('films')->where('name', $name)->exists();
+    }
+    
+    private function insertFilmIntoJson($filmData)
+    {
+        // Ruta del archivo JSON en el directorio /public
+        $filePath = public_path('films.json');
+    
+        // Leer el contenido actual del archivo JSON
+        if (file_exists($filePath)) {
+            $existingData = json_decode(file_get_contents($filePath), true);
+        } else {
+            $existingData = [];
+        }
+    
+        // Agregar los nuevos datos al array existente
+        $existingData[] = $filmData;
+    
+        // Guardar el array actualizado en el archivo JSON
+        file_put_contents($filePath, json_encode($existingData, JSON_PRETTY_PRINT));
     }
 
     public function editFilm($id)

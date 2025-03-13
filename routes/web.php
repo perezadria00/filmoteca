@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FilmController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\ValidateUrl;
 
 
 Route::get('/', function () {
