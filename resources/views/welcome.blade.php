@@ -44,6 +44,7 @@
                 <li class="list-group-item"><a href="/filmout/listFilmsByGenre">Ver películas filtradas por género</a></li>
                 <li class="list-group-item"><a href="/filmout/sortFilms">Ver películas ordenadas de más nuevas a más viejas</a></li>
                 <li class="list-group-item"><a href="/filmout/countFilms">Contador de películas</a></li>
+                <li class="list-group-item"><a href="/actorout/actors">Ver todos los actores</a></li>
             </ul>
         </div>
 
