@@ -36,4 +36,5 @@ Route::prefix('filmin')->middleware('ValidateUrl')->group(function () {
 
 Route::prefix('actorout')->group(function(){
     Route::get('actors', [ActorController::class, 'listActors'])->name('listActors');
+    Route::get('listActorsByDecade');
 });
