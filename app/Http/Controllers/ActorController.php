@@ -35,29 +35,42 @@ class ActorController extends Controller
     }
 
     public function listActorsByDecade(Request $request): View
-{
-    $title = "Listado de actores por década";
+    {
+        $title = "Listado de actores por década";
 
-    // Validar la década seleccionada
-    $validatedData = $request->validate([
-        'decades' => 'required|integer', 
-    ]);
+        // Validar la década seleccionada
+        $validatedData = $request->validate([
+            'decades' => 'required|integer',
+        ]);
 
-    $decade = $validatedData['decades'];
+        $decade = $validatedData['decades'];
 
-    // Calcular el rango de años para la década seleccionada
-    $startYear = $decade;
-    $endYear = $decade + 9;
+        // Calcular el rango de años para la década seleccionada
+        $startYear = $decade;
+        $endYear = $decade + 9;
 
-    // Filtrar actores por década
-    $actors = DB::table('actors')
-        ->whereYear('birthdate', '>=', $startYear)
-        ->whereYear('birthdate', '<=', $endYear)
-        ->get();
+        // Filtrar actores por década
+        $actors = DB::table('actors')
+            ->whereYear('birthdate', '>=', $startYear)
+            ->whereYear('birthdate', '<=', $endYear)
+            ->get();
 
-    return view('actors.list', [
-        'actors' => $actors,
-        'title' => $title,
-    ]);
-}
+        return view('actors.list', [
+            'actors' => $actors,
+            'title' => $title,
+        ]);
+    }
+
+    public function countActors()
+    {
+
+        $totalActors = DB::table('actors')->count();
+
+
+
+        $title = "Contador de Películas";
+
+
+        return view('actors.count', ['totalActors' => $totalActors, 'title' => $title]);
+    }
 }
