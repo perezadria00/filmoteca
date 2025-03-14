@@ -11,9 +11,13 @@ Route::get('/', function () {
 });
 
 
+
 Route::middleware('year')->group(function () {
     Route::prefix('filmout')->group(function () {
         // Rutas con el prefijo "filmout"
+        Route::get('filmMenu', function(){
+            return view('films.filmMenu');
+        });
         Route::get('oldFilms/{year?}', [FilmController::class, 'listOldFilms'])->name('oldFilms');
         Route::get('newFilms/{year?}', [FilmController::class, 'listNewFilms'])->name('newFilms');
         Route::get('films', [FilmController::class, 'listFilms'])->name('listFilms');
@@ -35,8 +39,14 @@ Route::prefix('filmin')->middleware('ValidateUrl')->group(function () {
 
 Route::middleware('year')->group(function () {
     Route::prefix('actorout')->group(function () {
+        Route::get('actorMenu', function(){
+            return view('actors.actorMenu');
+        });
+        Route::get('actorDecadeFilter', function(){
+            return view('actors.actorDecadeFilter');
+        });
         Route::get('actors', [ActorController::class, 'listActors'])->name('listActors');
         Route::get('listActorsByDecade', [ActorController::class, 'listActorsByDecade'])->name('listActorsByDecade');
-        Route::get('countActors', [ActorController::class, 'countActors'])->name('countActors');
+        Route::get('countActors');
     });
 });
