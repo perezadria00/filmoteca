@@ -1,12 +1,12 @@
 [
     {
         "id": 1,
-        "name": "La Rosa Púrpura del Cairo",
+        "name": "La Rosa P\u00farpura del Cairo",
         "year": 1985,
         "genre": "Drama",
         "country": "USA",
         "duration": 180,
-        "img_url": "https://es.web.img2.acsta.net/medias/nmedia/18/79/45/34/20253823.jpg"
+        "img_url": "https:\/\/es.web.img2.acsta.net\/medias\/nmedia\/18\/79\/45\/34\/20253823.jpg"
     },
     {
         "id": 2,
@@ -15,7 +15,7 @@
         "genre": "Comedia",
         "country": "USA",
         "duration": 180,
-        "img_url": "https://pics.filmaffinity.com/El_club_de_los_cinco-192309838-large.jpg"
+        "img_url": "https:\/\/pics.filmaffinity.com\/El_club_de_los_cinco-192309838-large.jpg"
     },
     {
         "id": 3,
@@ -24,24 +24,24 @@
         "genre": "Drama",
         "country": "USA",
         "duration": 180,
-        "img_url": "https://pics.filmaffinity.com/Forrest_Gump-212765827-large.jpg"
+        "img_url": "https:\/\/pics.filmaffinity.com\/Forrest_Gump-212765827-large.jpg"
     },
     {
         "id": 4,
         "name": "Arrival",
         "year": 2016,
-        "genre": "Ciencia Ficción",
+        "genre": "Ciencia Ficci\u00f3n",
         "country": "USA",
         "duration": 180,
-        "img_url": "https://pics.filmaffinity.com/La_llegada-686966912-large.jpg"
+        "img_url": "https:\/\/pics.filmaffinity.com\/La_llegada-686966912-large.jpg"
     },
     {
         "id": 5,
         "name": "As Bestas",
         "year": 2022,
         "genre": "Drama",
-        "country": "España",
-        "duration": 180,    
-        "img_url": "https://pics.filmaffinity.com/As_bestas-275688233-large.jpg"
+        "country": "Espa\u00f1a",
+        "duration": 180,
+        "img_url": "https:\/\/pics.filmaffinity.com\/As_bestas-275688233-large.jpg"
     }
 ]

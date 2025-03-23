@@ -44,6 +44,8 @@
             <ul class="list-group mt-4">
                 <li class="list-group-item"><a href="/actorout/actors">Ver todos los actores</a></li>
                 <li class="list-group-item"><a href="/actorout/actorDecadeFilter">Filtrar actores por década</a></li>
+                <li class="list-group-item"><a href="/actorout/countActors">Contador de actores</a></li>
+                <li class="list-group-item"><a href="#">Eliminar actores</a></li>
             </ul>
         </div>
 
