@@ -57,4 +57,5 @@ Route::delete('/actors/{id}', [ActorController::class, 'destroy']);
 
 Route::prefix('api')->group(function () {
     Route::get('/films-with-actors', [FilmController::class, 'getFilmsWithActors'])->name('api.films');
+    Route::get('/actors-with-films', [FilmController::class, 'getActorsWithFilms'])->name('api.actors');
 });

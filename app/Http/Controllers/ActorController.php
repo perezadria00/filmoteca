@@ -6,6 +6,8 @@ use App\Models\Actor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+
 
 class ActorController extends Controller
 {
@@ -93,6 +95,16 @@ class ActorController extends Controller
                 'status' => false,
                 'message' => 'Error al eliminar el actor: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function getActorsWithFilms(): JsonResponse
+    {
+        try {
+            $actors = Actor::with('films')->get();
+            return response()->json($actors, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener películas: ' . $e->getMessage()], 500);
         }
     }
 }
