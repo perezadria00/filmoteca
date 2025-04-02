@@ -10,44 +10,63 @@ use Illuminate\Http\JsonResponse;
 
 class FilmController extends Controller
 {
-    public function readFilms()
-    {
-        // Obtener películas desde la base de datos utilizando Eloquent
-        $db_films = Film::all()->toArray();
-
-        // Leer películas desde el archivo JSON
-        $filePath = storage_path('app/public/films.json');
-
-        if (file_exists($filePath)) {
-            $json_films = json_decode(file_get_contents($filePath), true);
-
-            // Verificar si el archivo JSON está correctamente estructurado
-            if (is_array($json_films)) {
-                foreach ($json_films as &$film) {
-                    if (!isset($film['id']) || empty($film['id'])) {
-                        $film['id'] = uniqid();
-                    }
-                }
-            } else {
-                $json_films = [];
-                Log::warning("El archivo JSON está vacío o mal estructurado.");
-            }
-        } else {
-            $json_films = [];
-            Log::warning("El archivo JSON no existe: $filePath");
-        }
-
-        // Combinar resultados evitando duplicados
-        $combined_films = collect($db_films)->merge(collect($json_films)->unique('id'))->toArray();
-
-        return $combined_films;
-    }
-
     public function listFilms()
     {
         $title = "Listado de todas las pelis";
-        $films = $this->readFilms();
+        $films = Film::all();
         return view('films.list', ["films" => $films, "title" => $title]);
+    }
+
+    public function listOldFilms($year = 2000)
+    {
+        $title = "Listado de Pelis Antiguas (Antes de $year)";
+        $old_films = Film::where('year', '<', $year)->get();
+        return view('films.list', ["films" => $old_films, "title" => $title]);
+    }
+
+    public function listNewFilms($year = 2000)
+    {
+        $title = "Listado de Pelis Nuevas (Después de $year)";
+        $new_films = Film::where('year', '>=', $year)->get();
+        return view('films.list', ["films" => $new_films, "title" => $title]);
+    }
+
+    public function listFilmsByYear($year = null)
+    {
+        $title = "Listado de películas por año";
+        if ($year) {
+            $films = Film::where('year', $year)->get();
+            $title = "Listado de películas del año $year";
+        } else {
+            $films = Film::all();
+        }
+        return view('films.list', ["films" => $films, "title" => $title]);
+    }
+
+    public function listFilmsByGenre($genre = null)
+    {
+        $title = "Listado de películas por género";
+        if ($genre) {
+            $films = Film::where('genre', 'LIKE', '%' . $genre . '%')->get();
+            $title = "Listado de películas del género: $genre";
+        } else {
+            $films = Film::all();
+        }
+        return view('films.list', ["films" => $films, "title" => $title]);
+    }
+
+    public function listFilmsByYearDescending()
+    {
+        $title = "Listado de todas las pelis de más nuevas a más viejas";
+        $films = Film::orderBy('year', 'desc')->get();
+        return view("films.list", ["films" => $films, "title" => $title]);
+    }
+
+    public function countFilms()
+    {
+        $totalFilms = Film::count();
+        $title = "Contador de Películas";
+        return view('films.count', ['totalFilms' => $totalFilms, 'title' => $title]);
     }
 
     public function createFilm(Request $request)
@@ -59,33 +78,45 @@ class FilmController extends Controller
             'country' => 'required|string|max:255',
             'duration' => 'required|integer|min:1|max:500',
             'img_url' => 'required|url|max:65535',
-            'options' => 'required|in:db,json',
         ]);
 
         try {
-            if ($validatedData['options'] === 'db') {
-                Film::create($validatedData);
-                Log::info('Película añadida correctamente en la base de datos.');
-            } elseif ($validatedData['options'] === 'json') {
-                $this->insertFilmIntoJson($validatedData);
-                Log::info('Película añadida correctamente en el archivo JSON.');
-            }
+            Film::create($validatedData);
+            Log::info('Película añadida correctamente en la base de datos.');
             return redirect('/filmout/films')->with('success', 'Película añadida correctamente.');
         } catch (\Exception $e) {
             Log::error('Error al añadir la película: ' . $e->getMessage());
-            return redirect('/')->with('error', 'Hubo un problema al añadir la película: ' . $e->getMessage());
+            return redirect('/')->with('error', 'Error al añadir la película: ' . $e->getMessage());
         }
     }
 
-    private function insertFilmIntoJson($filmData)
+    public function editFilm($id)
     {
-        $filePath = storage_path('app/public/films.json');
-        $filmData['id'] = uniqid();
+        $film = Film::findOrFail($id);
+        return view('films.edit', ['film' => $film]);
+    }
 
-        $existingData = file_exists($filePath) ? json_decode(file_get_contents($filePath), true) : [];
-        $existingData[] = $filmData;
+    public function updateFilm(Request $request, $id)
+    {
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'year' => 'required|integer|min:1900|max:2024',
+                'genre' => 'required|string|max:255',
+                'country' => 'required|string|max:255',
+                'duration' => 'required|integer|min:1|max:500',
+                'img_url' => 'required|url|max:65535',
+            ]);
 
-        file_put_contents($filePath, json_encode($existingData, JSON_PRETTY_PRINT));
+            $film = Film::findOrFail($id);
+            $film->update($validatedData);
+
+            Log::info('Película actualizada correctamente.');
+            return redirect()->route('listFilms')->with('success', 'Película actualizada correctamente.');
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar la película: ' . $e->getMessage());
+            return redirect()->route('listFilms')->with('error', 'Error al actualizar la película: ' . $e->getMessage());
+        }
     }
 
     public function deleteFilm($id)
@@ -93,11 +124,11 @@ class FilmController extends Controller
         try {
             $film = Film::findOrFail($id);
             $film->delete();
-            Log::info("Película con ID $id eliminada de la base de datos.");
+            Log::info("Película con ID $id eliminada.");
             return redirect()->route('listFilms')->with('success', 'Película eliminada correctamente.');
         } catch (\Exception $e) {
             Log::error('Error al eliminar la película: ' . $e->getMessage());
-            return redirect()->route('listFilms')->with('error', 'Hubo un problema al eliminar la película: ' . $e->getMessage());
+            return redirect()->route('listFilms')->with('error', 'Error al eliminar la película: ' . $e->getMessage());
         }
     }
 
@@ -110,4 +141,10 @@ class FilmController extends Controller
             return response()->json(['error' => 'Error al obtener películas: ' . $e->getMessage()], 500);
         }
     }
+
+    public function showCreateForm()
+{
+    return view('films.create');
+}
+
 }
