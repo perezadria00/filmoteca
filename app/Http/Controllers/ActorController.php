@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
+use App\Models\Actor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class ActorController extends Controller
 {
     /**
-     * Obtiene todos los actores desde la base de datos.
+     * Obtiene todos los actores desde la base de datos usando Eloquent.
      *
      * @return \Illuminate\Support\Collection
      */
     public function readActors()
     {
-        return DB::table('actors')->get();
+        return Actor::all();
     }
 
     /**
@@ -34,24 +35,24 @@ class ActorController extends Controller
         ]);
     }
 
+    /**
+     * Lista actores por década.
+     *
+     * @return \Illuminate\View\View
+     */
     public function listActorsByDecade(Request $request): View
     {
         $title = "Listado de actores por década";
 
-        // Validar la década seleccionada
         $validatedData = $request->validate([
             'decades' => 'required|integer',
         ]);
 
         $decade = $validatedData['decades'];
-
-        // Calcular el rango de años para la década seleccionada
         $startYear = $decade;
         $endYear = $decade + 9;
 
-        // Filtrar actores por década
-        $actors = DB::table('actors')
-            ->whereYear('birthdate', '>=', $startYear)
+        $actors = Actor::whereYear('birthdate', '>=', $startYear)
             ->whereYear('birthdate', '<=', $endYear)
             ->get();
 
@@ -61,47 +62,37 @@ class ActorController extends Controller
         ]);
     }
 
+    /**
+     * Cuenta el total de actores en la base de datos.
+     */
     public function countActors()
     {
-
-        $totalActors = DB::table('actors')->count();
-
-
-
-        $title = "Contador de Películas";
-
+        $totalActors = Actor::count();
+        $title = "Contador de Actores";
 
         return view('actors.count', ['totalActors' => $totalActors, 'title' => $title]);
     }
 
-public function destroy($id)
-{
-    try {
-        $actor = DB::table('actors')->where('id', $id)->first();
+    /**
+     * Elimina un actor por ID usando Eloquent.
+     */
+    public function destroy($id)
+    {
+        try {
+            $actor = Actor::findOrFail($id);
+            $actor->delete();
 
-        if (!$actor) {
+            return response()->json([
+                'action' => 'delete',
+                'status' => true,
+                'message' => 'Actor eliminado correctamente'
+            ], 200);
+        } catch (\Exception $e) {
             return response()->json([
                 'action' => 'delete',
                 'status' => false,
-                'message' => 'Actor no encontrado'
-            ], 404);
+                'message' => 'Error al eliminar el actor: ' . $e->getMessage()
+            ], 500);
         }
-
-        DB::table('actors')->where('id', $id)->delete();
-
-        return response()->json([
-            'action' => 'delete',
-            'status' => true,
-            'message' => 'Actor eliminado correctamente'
-        ], 200);
-    } catch (\Exception $e) {
-
-        return response()->json([
-            'action' => 'delete',
-            'status' => false,
-            'message' => 'Error al eliminar el actor'
-        ], 500);
     }
-}
-
 }
