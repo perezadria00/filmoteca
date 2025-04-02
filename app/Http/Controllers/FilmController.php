@@ -6,6 +6,7 @@ use App\Models\Film;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\JsonResponse;
 
 class FilmController extends Controller
 {
@@ -97,6 +98,16 @@ class FilmController extends Controller
         } catch (\Exception $e) {
             Log::error('Error al eliminar la película: ' . $e->getMessage());
             return redirect()->route('listFilms')->with('error', 'Hubo un problema al eliminar la película: ' . $e->getMessage());
+        }
+    }
+
+    public function getFilmsWithActors(): JsonResponse
+    {
+        try {
+            $films = Film::with('actors')->get();
+            return response()->json($films, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener películas: ' . $e->getMessage()], 500);
         }
     }
 }

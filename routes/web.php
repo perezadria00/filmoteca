@@ -29,7 +29,7 @@ Route::middleware('year')->group(function () {
         Route::get('edit/{id}', [FilmController::class, 'editFilm'])->name('editFilm');
         Route::put('update/{id}', [FilmController::class, 'updateFilm'])->name('updateFilm');
         Route::delete('delete/{id}', [FilmController::class, 'deleteFilm'])->name('deleteFilm');
-        });
+    });
 });
 
 
@@ -54,3 +54,7 @@ Route::middleware('year')->group(function () {
 });
 
 Route::delete('/actors/{id}', [ActorController::class, 'destroy']);
+
+Route::prefix('api')->group(function () {
+    Route::get('/films-with-actors', [FilmController::class, 'getFilmsWithActors'])->name('api.films');
+});
