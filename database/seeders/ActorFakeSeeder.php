@@ -17,7 +17,7 @@ class ActorFakeSeeder extends Seeder
                 'name' => $faker->firstName,
                 'surname' => $faker->lastName,
                 'birthdate' => $faker->date(),
-                'country' => $faker->country,
+                'country' => substr($faker->country, 0, 30), 
                 'img_url' => $faker->imageUrl(),
                 'created_at' => $faker->dateTime(),
                 'updated_at' => $faker->dateTime(),

@@ -132,7 +132,7 @@ class FilmController extends Controller
         }
     }
 
-    public function getFilmsWithActors(): JsonResponse
+    public function index(): JsonResponse
     {
         try {
             $films = Film::with('actors')->get();

@@ -56,6 +56,6 @@ Route::middleware('year')->group(function () {
 Route::delete('/actors/{id}', [ActorController::class, 'destroy']);
 
 Route::prefix('api')->group(function () {
-    Route::get('/films-with-actors', [FilmController::class, 'getFilmsWithActors'])->name('api.films');
-    Route::get('/actors-with-films', [ActorController::class, 'getActorsWithFilms'])->name('api.actors');
+    Route::get('/actors', [FilmController::class, 'index'])->name('api.films');
+    Route::get('/films', [ActorController::class, 'index'])->name('api.actors');
 });

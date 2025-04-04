@@ -1,0 +1,50 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Eliminar la tabla films_actors si existe
+        if (Schema::hasTable('films_actors')) {
+            Schema::drop('films_actors');
+        }
+
+        // Crear la tabla film_actor
+        Schema::create('film_actor', function (Blueprint $table) {
+            $table->unsignedBigInteger('film_id');
+            $table->unsignedBigInteger('actor_id');
+            $table->timestamps();
+
+            $table->foreign('film_id')->references('id')->on('films')->onDelete('cascade');
+            $table->foreign('actor_id')->references('id')->on('actors')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Eliminar la tabla film_actor si existe
+        if (Schema::hasTable('film_actor')) {
+            Schema::drop('film_actor');
+        }
+
+        // Restaurar la tabla films_actors
+        Schema::create('films_actors', function (Blueprint $table) {
+            $table->unsignedBigInteger('film_id');
+            $table->unsignedBigInteger('actor_id');
+            $table->timestamps();
+
+            $table->foreign('film_id')->references('id')->on('films')->onDelete('cascade');
+            $table->foreign('actor_id')->references('id')->on('actors')->onDelete('cascade');
+        });
+    }
+};

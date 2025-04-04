@@ -37,6 +37,6 @@ class FilmActorSeeder extends Seeder
         }
 
         
-        DB::table('films_actors')->insert($relations);
+        DB::table('film_actor')->insert($relations);
     }
 }

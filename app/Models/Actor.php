@@ -11,13 +11,17 @@ class Actor extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'name', 'surname', 'birthdate', 'country', 'img_url'
+        'name',
+        'surname',
+        'birthdate',
+        'country',
+        'img_url'
     ];
 
     public $timestamps = true;
 
     public function films()
     {
-        return $this->belongsToMany(Film::class, 'films_actors', 'actor_id', 'film_id');
+        return $this->belongsToMany(Film::class, 'film_actor', 'actor_id', 'film_id');
     }
 }

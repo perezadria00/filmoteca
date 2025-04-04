@@ -98,7 +98,7 @@ class ActorController extends Controller
         }
     }
 
-    public function getActorsWithFilms(): JsonResponse
+    public function index(): JsonResponse
     {
         try {
             $actors = Actor::with('films')->get();
