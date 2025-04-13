@@ -12,15 +12,13 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-
-        # ¡Tener en cuenta el orden en que se añade cada seeder para que no de error al ejecutar el comando db:seed!
         $this->call([
-            FilmFakeSeeder::class,
             ActorFakeSeeder::class,
+            FilmFakeSeeder::class,
             FilmActorSeeder::class,
-            AudiencesSeeder::class,
         ]);
     }
+    
 }
