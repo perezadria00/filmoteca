@@ -3,40 +3,19 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Film;
+use App\Models\Actor;
 
 class FilmActorSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run()
+    public function run(): void
     {
-        
-        $filmIds = DB::table('films')->pluck('id')->toArray();
-        $actorIds = DB::table('actors')->pluck('id')->toArray();
+        $films = Film::all();
+        $actorIds = Actor::pluck('id')->toArray();
 
-        if (empty($filmIds) || empty($actorIds)) {
-            return; 
+        foreach ($films as $film) {
+            $randomActorIds = collect($actorIds)->random(rand(1, 3));
+            $film->actors()->attach($randomActorIds);
         }
-
-        $relations = [];
-        
-        foreach ($filmIds as $filmId) {
-           
-            $randomActors = array_rand(array_flip($actorIds), rand(1, 3));
-            
-            foreach ((array) $randomActors as $actorId) {
-                $relations[] = [
-                    'film_id' => $filmId,
-                    'actor_id' => $actorId,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-            }
-        }
-
-        
-        DB::table('film_actor')->insert($relations);
     }
 }
